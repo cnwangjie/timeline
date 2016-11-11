@@ -28,7 +28,7 @@ PostSchema.pre('new', function(next) {
 PostSchema.statics = {
     fetch: function(user, cb) {
         return this
-            .find({_user: user})
+            .find({user: user})
             .sort('meta.createAt')
             exec(cb);
     },
