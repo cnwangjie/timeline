@@ -4,24 +4,23 @@ var PostSchema = new mongoose.Schema({
     user: String,
     id: Number,
     meta: {
-        createAt: {
+        created_at: {
             type: Date,
             default: Date.now()
         },
-        updateAt: {
+        updated_at: {
             type: Date,
             default: Date.now()
         }
     }
 });
 
-PostSchema.pre('new', function(next) {
-    if (this.isNew) {
-        this.meta.createAt = this.meta.updateAt = Date.now();
-    } else {
-        this.meta.updateAt = Date.now()
+PostSchema.pre('save', function(next) {
+    var curDate = new Date();
+    this.updated_at = curDate;
+    if (!this.created_at) {
+        this.meta.created_at = curDate;
     }
-
     next();
 });
 

@@ -1,6 +1,17 @@
+<div class="jumbotron">
+    <form ic-post-to="./new" ic-target="" role="form">
+        <div class="form-group">
+            <textarea name="content" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-default">add</button>
+        </div>
+    </form>
+</div>
 {{#each posts}}
-    <div class="jumbotron">
-        <h1>{{this.meta.createAt}}</h1>
+    <div id="{{this._id}}" class="jumbotron">
+        <h1>{{date this.meta.createAt}})</h1>
         <p>{{this.content}}</p>
     </div>
+
 {{/each}}

@@ -5,10 +5,10 @@ var Post = require('./models/post.js');
 var port = process.env.PORT || 80;
 var app = express();
 
-var db = mongoose.createConnect('mongodb://127.0.0.1:27017/test')
+var db = mongoose.connect('mongodb://127.0.0.1:27017/test');
 
-db.on('error', function(err) {
-    console.log(error);
+exphbs.registerHelper('date', function (timestamp) {
+    return Date(timestamp);
 });
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -22,7 +22,7 @@ app.get('/', function(req, res) {
 
 app.get('/t/:user', function(req, res) {
     var user = req.params.user;
-    Post.fetch(user, function(err, posts) {
+    Post.find(function(err, posts) {
         if (err) {
             console.log(err);
         }
@@ -32,7 +32,6 @@ app.get('/t/:user', function(req, res) {
             title: user+'\'s timeline',
             posts: posts
         });
-        db.close();
     });
 });
 
