@@ -1,17 +1,23 @@
 var express = require('express');
 var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
+var moment = require('moment');
 var Post = require('./models/post.js');
 var port = process.env.PORT || 80;
 var app = express();
 
 var db = mongoose.connect('mongodb://127.0.0.1:27017/test');
-
-exphbs.registerHelper('date', function (timestamp) {
-    return Date(timestamp);
+var hbs = exphbs.create({
+    defaultLayout: 'main',
+    helpers: {
+        date: function(timestamp) {
+            var time = moment(timestamp);
+            return moment.format('lll');
+        }
+    }
 });
 
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 app.get('/', function(req, res) {

@@ -10,7 +10,7 @@
 </div>
 {{#each posts}}
     <div id="{{this._id}}" class="jumbotron">
-        <h1>{{date this.meta.createAt}})</h1>
+        <p>{{date this.meta.createAt}}</p><hr>
         <p>{{this.content}}</p>
     </div>
 
