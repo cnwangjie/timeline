@@ -1,17 +1,21 @@
-<div class="jumbotron">
-    <form ic-post-to="./new" ic-target="" role="form">
+<div id="writer" class="jumbotron">
+    <form ic-post-to="./{{user}}/new" ic-target="#writer" ic-replace-target="true" role="form">
         <div class="form-group">
-            <textarea name="content" class="form-control" rows="3"></textarea>
+            <textarea type="text" name="content" id="content" class="form-control" rows="3"></textarea>
         </div>
         <div class="form-group">
-            <button class="btn btn-default">add</button>
+            <button type="submit" class="btn btn-default">Add</button>
         </div>
     </form>
 </div>
 {{#each posts}}
-    <div id="{{this._id}}" class="jumbotron">
-        <p>{{date this.meta.createAt}}</p><hr>
+    <div id="{{this.created_at}}" class="jumbotron">
+        <p>{{date this.created_at}}</p><hr>
         <p>{{this.content}}</p>
+        <a class="btn btn-warning" role="button">Edit</a>
+        <a class="btn btn-danger" role="button">Delete</a>
     </div>
-
 {{/each}}
+<div id="loader" class="jumbotron">
+    <a ic-get-from="./{{user}}?page=2" ic-target="#loader" ic-replace-target="true" class="btn btn-default btn-lg btn-block" role="button">Load More</a>
+</div>
