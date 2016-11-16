@@ -65,31 +65,12 @@ app.get('/t/:user', function(req, res) {
     }
 });
 
-app.get('/t/:user/page/:page', function(req, res) {
-    var user = req.params.user;
-    var page = req.params.page;
-    Post.list((page-1)*10, 10, function(err, posts) {
-        if (err) {
-            console.log(err);
-        }
-        var resText = '';
-        for (var post in posts) {
-            resText += "<div id=" + moment(post.created_at).valueOf() + " class='jumbotron'>\
-                    <p>" + moment(post.created_at).format('YYYY-MM-DD hh:mm:ss') + "</p><hr>\
-                    <p>" + post.content + "</p>\
-                    <a class='btn btn-warning' role='button'>Edit</a>\
-                    <a class='btn btn-danger' role='button'>Delete</a>\
-                </div>";
-        }
-        res.status(200).send(resText);
-    });
-});
-
 app.post('/t/:user/new', function(req, res) {
     var now = Date.now();
     var content = req.body.content;
     var user = req.params.user;
     var newPost = {
+        _id: objectId(),
         content: content,
         user: user,
         created_at: now
@@ -112,6 +93,8 @@ app.post('/t/:user/new', function(req, res) {
             resText += "<div id=" + moment(now).valueOf() + " class='jumbotron'>\
                     <p>" + moment(now).format('YYYY-MM-DD hh:mm:ss') + "</p><hr>\
                     <p>" + content + "</p>\
+                    <a class='btn btn-warning' role='button'>Edit</a>\
+                    <a class='btn btn-danger' role='button'>Delete</a>\
                 </div>"
             res.status(200).send(resText);
         }

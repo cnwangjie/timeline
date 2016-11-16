@@ -12,7 +12,7 @@
     <div id="{{this.created_at}}" class="jumbotron">
         <p>{{date this.created_at}}</p><hr>
         <p>{{this.content}}</p>
-        <a class="btn btn-warning" role="button">Edit</a>
+        <a ic-delete-from="./delete/" class="btn btn-warning" role="button">Edit</a>
         <a class="btn btn-danger" role="button">Delete</a>
     </div>
 {{/each}}
