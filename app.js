@@ -4,7 +4,7 @@ var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
 var moment = require('moment');
 var Post = require('./models/post.js');
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 8080;
 var app = express();
 
 var db = mongoose.connect('mongodb://127.0.0.1:27017/test');
@@ -70,7 +70,6 @@ app.post('/t/:user/new', function(req, res) {
     var content = req.body.content;
     var user = req.params.user;
     var newPost = {
-        _id: objectId(),
         content: content,
         user: user,
         created_at: now
@@ -101,7 +100,7 @@ app.post('/t/:user/new', function(req, res) {
     });
 });
 
-app.post('/t/update/:id', function(req, res) {
+app.post('/t/:user/update/:id', function(req, res) {
     var id = req.params.id;
     var newPost = {
         content: req.params.content
@@ -118,7 +117,7 @@ app.post('/t/update/:id', function(req, res) {
     });
 });
 
-app.delete('/t/delete/:id', function(req, res) {
+app.delete('/t/:user/delete/:id', function(req, res) {
     var id = req.params.id;
     Post.remove({_id: id}, function(err) {
         if (err) {
