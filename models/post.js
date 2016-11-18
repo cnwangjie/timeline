@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var PostSchema = new mongoose.Schema({
     content: String,
     user: String,
-    id: Number,
+    id: String,
     created_at: {
         type: Date,
         default: Date.now()

@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
 var moment = require('moment');
+var uuid = require('node-uuid');
 var Post = require('./models/post.js');
 var port = process.env.PORT || 8080;
 var app = express();
@@ -32,15 +33,16 @@ app.get('/t/:user', function(req, res) {
     var user = req.params.user;
     if (req.query.page) {
         var page = req.query.page;
-        Post.list((page-1)*10, 10, function(err, posts) {
+        Post.list((page-1)*5, 5, function(err, posts) {
             if (err) {
                 console.log(err);
             }
             var resText = '';
-            for (var post in posts) {
-                resText += "<div id=" + moment(post.created_at).valueOf() + " class='jumbotron'>\
-                        <p>" + moment(post.created_at).format('YYYY-MM-DD hh:mm:ss') + "</p><hr>\
-                        <p>" + post.content + "</p>\
+            console.log(posts);
+            for (var i=0;i<posts.length;i+=1) {
+                resText += "<div id=" + posts[i].id + " class='jumbotron'>\
+                        <p>" + moment(posts[i].created_at).format('YYYY-MM-DD hh:mm:ss') + "</p><hr>\
+                        <p>" + posts[i].content + "</p>\
                         <a class='btn btn-warning' role='button'>Edit</a>\
                         <a class='btn btn-danger' role='button'>Delete</a>\
                     </div>";
@@ -51,7 +53,7 @@ app.get('/t/:user', function(req, res) {
             res.status(200).send(resText);
         });
     } else {
-        Post.list(0, 10, function(err, posts) {
+        Post.list(0, 5, function(err, posts) {
             if (err) {
                 console.log(err);
             }
@@ -69,7 +71,9 @@ app.post('/t/:user/new', function(req, res) {
     var now = Date.now();
     var content = req.body.content;
     var user = req.params.user;
+    var id = uuid.v1();
     var newPost = {
+        id: id,
         content: content,
         user: user,
         created_at: now
@@ -89,7 +93,7 @@ app.post('/t/:user/new', function(req, res) {
                     </div>\
                 </form>\
             </div>";
-            resText += "<div id=" + moment(now).valueOf() + " class='jumbotron'>\
+            resText += "<div id=" + id + " class='jumbotron'>\
                     <p>" + moment(now).format('YYYY-MM-DD hh:mm:ss') + "</p><hr>\
                     <p>" + content + "</p>\
                     <a class='btn btn-warning' role='button'>Edit</a>\
@@ -100,12 +104,13 @@ app.post('/t/:user/new', function(req, res) {
     });
 });
 
-app.post('/t/:user/update/:id', function(req, res) {
+app.post('/t/update/:id', function(req, res) {
     var id = req.params.id;
+    var content = req.body.content;
     var newPost = {
-        content: req.params.content
+        content: content
     }
-    Post.update({_id: id}, newPost, {upsert: true}, function(err) {
+    Post.update({id: id}, newPost, {upsert: true}, function(err) {
         if (err) {
             console.log(err);
             res.status(300);
@@ -113,21 +118,20 @@ app.post('/t/:user/update/:id', function(req, res) {
             console.log('id '+id+' updated!');
             res.status(200).json(newPost);
         }
-        db.close();
     });
 });
 
-app.delete('/t/:user/delete/:id', function(req, res) {
+app.post('/t/delete/:id', function(req, res) {
     var id = req.params.id;
-    Post.remove({_id: id}, function(err) {
+    console.log('start delete' + id);
+    Post.remove({id: id}, function(err) {
         if (err) {
             console.log(err);
             res.status(300);
         } else {
             console.log('delete '+id+' ok!');
-            res.status(200);
+            res.set('X-IC-Remove', 'true');
         }
-        db.close();
     });
 });
 

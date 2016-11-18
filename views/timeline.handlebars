@@ -9,11 +9,13 @@
     </form>
 </div>
 {{#each posts}}
-    <div id="{{this.created_at}}" class="jumbotron">
+    <div id="{{this.id}}" class="jumbotron">
         <p>{{date this.created_at}}</p><hr>
         <p>{{this.content}}</p>
-        <a ic-delete-from="./delete/" class="btn btn-warning" role="button">Edit</a>
-        <a class="btn btn-danger" role="button">Delete</a>
+        <a class="btn btn-warning" role="button">Edit</a>
+        <a ic-delete-from="./delete/{{this.id}}" ic-confirm="Are you sure?" ic-target="#{{this.id}}" class="btn btn-danger" role="button">Delete
+        <i class="ic-indicator fa fa-spinner fa-spin" style="display: none"></i>
+        </a>
     </div>
 {{/each}}
 <div id="loader" class="jumbotron">
