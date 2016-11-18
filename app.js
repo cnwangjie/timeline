@@ -40,16 +40,16 @@ app.get('/t/:user', function(req, res) {
             var resText = '';
             console.log(posts);
             for (var i=0;i<posts.length;i+=1) {
-                resText += "<div id=" + posts[i].id + " class='jumbotron'>\
-                        <p>" + moment(posts[i].created_at).format('YYYY-MM-DD hh:mm:ss') + "</p><hr>\
-                        <p>" + posts[i].content + "</p>\
-                        <a class='btn btn-warning' role='button'>Edit</a>\
-                        <a class='btn btn-danger' role='button'>Delete</a>\
-                    </div>";
+                resText += '<div id=' + posts[i].id + ' class="jumbotron">\
+                        <p>' + moment(posts[i].created_at).format('YYYY-MM-DD hh:mm:ss') + '</p><hr>\
+                        <p>' + posts[i].content + '</p>\
+                        <a ic-get-from="./post/' + posts[i].id + '" ic-target="#' + posts[i].id + '" class="btn btn-warning" role="button">Edit</a>\
+                        <a ic-delete-from="./delete/' + posts[i].id + '" ic-confirm="Are you sure?" ic-target="#' + posts[i].id + '" class="btn btn-danger" role="button">Delete</a>\
+                    </div>';
             }
-            resText += "<div id='loader' class='jumbotron'>\
-                <a ic-get-from='./" + user + "?page=" + (parseInt(page)+1) + "' ic-target='#loader' ic-replace-target='true' class='btn btn-default btn-lg btn-block' role='button'>Load More</a>\
-            </div>";
+            resText += '<div id="loader" class="jumbotron">\
+                <a ic-get-from="./' + user + '?page=' + (parseInt(page)+1) + '" ic-target="#loader" ic-replace-target="true" class="btn btn-default btn-lg btn-block" role="button">Load More</a>\
+            </div>';
             res.status(200).send(resText);
         });
     } else {
@@ -83,22 +83,42 @@ app.post('/t/:user/new', function(req, res) {
             console.log(err);
             res.status(300);
         } else {
-            var resText = "<div id='writer' class='jumbotron'>\
-                <form ic-post-to='./" + user + "/new' ic-target='#writer' ic-replace-target='true' role='form'>\
-                    <div class='form-group'>\
-                        <textarea name='content' class='form-control' rows='3'></textarea>\
+            var resText = '<div id="writer" class="jumbotron">\
+                <form ic-post-to="./' + user + '/new" ic-target="#writer" ic-replace-target="true" role="form">\
+                    <div class="form-group">\
+                        <textarea name="content" class="form-control" rows="3"></textarea>\
                     </div>\
-                    <div class='form-group'>\
-                        <button type='submit' class='btn btn-default'>add</button>\
+                    <div class="form-group">\
+                        <button type="submit" class="btn btn-default">add</button>\
                     </div>\
                 </form>\
-            </div>";
-            resText += "<div id=" + id + " class='jumbotron'>\
-                    <p>" + moment(now).format('YYYY-MM-DD hh:mm:ss') + "</p><hr>\
-                    <p>" + content + "</p>\
-                    <a class='btn btn-warning' role='button'>Edit</a>\
-                    <a class='btn btn-danger' role='button'>Delete</a>\
-                </div>"
+            </div>';
+            resText += '<div id=' + id + ' class="jumbotron">\
+                    <p>' + moment(now).format('YYYY-MM-DD hh:mm:ss') + '</p><hr>\
+                    <p>' + content + '</p>\
+                        <a ic-get-from="./post/' + id + '" ic-target="#' + id + '" class="btn btn-warning" role="button">Edit</a>\
+                        <a ic-delete-from="./delete/' + id + '" ic-confirm="Are you sure?" ic-target="#' + id + '" class="btn btn-danger" role="button">Delete</a>\
+                </div>'
+            res.status(200).send(resText);
+        }
+    });
+});
+
+app.get('/t/post/:id', function(req, res) {
+    var id = req.params.id;
+    Post.findOne({id: id}, function(err, post) {
+        if (err) {
+            console.log(err);
+        } else {
+            var resText = '<form ic-put-to="./update/' + post.id + '" ic-target="#' + post.id + '">\
+              <div class="form-group">\
+                <textarea type="text" name="content" id="content" class="form-control" rows="3">' + post.content + '</textarea>\
+              </div>\
+              <div class="form-group">\
+                <button type="submit" class="btn btn-default">Save</button>\
+              </div>\
+            </form>\
+            ';
             res.status(200).send(resText);
         }
     });
@@ -107,16 +127,28 @@ app.post('/t/:user/new', function(req, res) {
 app.post('/t/update/:id', function(req, res) {
     var id = req.params.id;
     var content = req.body.content;
+    console.log('start update'+id);
     var newPost = {
         content: content
     }
-    Post.update({id: id}, newPost, {upsert: true}, function(err) {
+    Post.update({id: id}, {'$set': newPost}, function(err) {
         if (err) {
             console.log(err);
             res.status(300);
         } else {
-            console.log('id '+id+' updated!');
-            res.status(200).json(newPost);
+            Post.findOne({id: id}, function(err, post) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    var resText = '<p>' + moment(post.created_at).format('YYYY-MM-DD hh:mm:ss') + '</p><hr>\
+                            <p>' + post.content + '</p>\
+                            <a ic-get-from="./post/' + post.id + '" ic-target="#' + post.id + '" class="btn btn-warning" role="button">Edit</a>\
+                            <a ic-delete-from="./delete/' + post.id + '" ic-confirm="Are you sure?" ic-target="#' + post.id + '" class="btn btn-danger" role="button">Delete</a>\
+                    ';
+                    res.status(200).send(resText);
+                    console.log('id '+id+' updated!');
+                }
+            });
         }
     });
 });
@@ -130,7 +162,7 @@ app.post('/t/delete/:id', function(req, res) {
             res.status(300);
         } else {
             console.log('delete '+id+' ok!');
-            res.set('X-IC-Remove', 'true');
+            res.append('X-IC-Remove', 'true').send();
         }
     });
 });

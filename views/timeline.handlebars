@@ -12,10 +12,8 @@
     <div id="{{this.id}}" class="jumbotron">
         <p>{{date this.created_at}}</p><hr>
         <p>{{this.content}}</p>
-        <a class="btn btn-warning" role="button">Edit</a>
-        <a ic-delete-from="./delete/{{this.id}}" ic-confirm="Are you sure?" ic-target="#{{this.id}}" class="btn btn-danger" role="button">Delete
-        <i class="ic-indicator fa fa-spinner fa-spin" style="display: none"></i>
-        </a>
+        <a ic-get-from="./post/{{this.id}}" ic-target="#{{this.id}}" class="btn btn-warning" role="button">Edit</a>
+        <a ic-delete-from="./delete/{{this.id}}" ic-confirm="Are you sure?" ic-target="#{{this.id}}" class="btn btn-danger" role="button">Delete</a>
     </div>
 {{/each}}
 <div id="loader" class="jumbotron">
