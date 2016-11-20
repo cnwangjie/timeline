@@ -1,6 +1,8 @@
-LoneFirstFramework
+timeline
 ======
 
 > Author : Wang Jie <i@i8e.net>
 
-### API
+### Introduce
+
+It's a simple timeline application.

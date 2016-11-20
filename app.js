@@ -1,5 +1,7 @@
+var crypto = require('crypto');
 var express = require('express');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var exphbs = require('express-handlebars');
 var mongoose = require('mongoose');
 var moment = require('moment');
@@ -8,7 +10,10 @@ var Post = require('./models/post.js');
 var port = process.env.PORT || 8080;
 var app = express();
 
+// connect to mongodb
 var db = mongoose.connect('mongodb://127.0.0.1:27017/test');
+
+// create handlebars template engine
 var hbs = exphbs.create({
     defaultLayout: 'main',
     helpers: {
@@ -18,22 +23,31 @@ var hbs = exphbs.create({
     }
 });
 
+// register template engine
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
+// Middleware
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser(credentials.cookieSecret));
 
+app.use(function(req, res, next) {
+
+});
+
+// It's A no meaning home page
 app.get('/', function(req, res) {
     res.render('home', {
         title: 'home'
     });
 });
 
+// Timeline page of one user. Browser using.
 app.get('/t/:user', function(req, res) {
     var user = req.params.user;
     if (req.query.page) {
         var page = req.query.page;
-        Post.list((page-1)*5, 5, function(err, posts) {
+        Post.list(user, (page-1)*5, 5, function(err, posts) {
             if (err) {
                 console.log(err);
             }
@@ -53,7 +67,7 @@ app.get('/t/:user', function(req, res) {
             res.status(200).send(resText);
         });
     } else {
-        Post.list(0, 5, function(err, posts) {
+        Post.list(user, 0, 5, function(err, posts) {
             if (err) {
                 console.log(err);
             }
@@ -63,10 +77,12 @@ app.get('/t/:user', function(req, res) {
                 title: user+'\'s timeline',
                 posts: posts
             });
+
         });
     }
 });
 
+// Browser side use ajax create route
 app.post('/t/:user/new', function(req, res) {
     var now = Date.now();
     var content = req.body.content;
@@ -104,6 +120,7 @@ app.post('/t/:user/new', function(req, res) {
     });
 });
 
+// Browser side use ajax loader.
 app.get('/t/post/:id', function(req, res) {
     var id = req.params.id;
     Post.findOne({id: id}, function(err, post) {
@@ -124,6 +141,7 @@ app.get('/t/post/:id', function(req, res) {
     });
 });
 
+// Browser side use ajax updater.
 app.post('/t/update/:id', function(req, res) {
     var id = req.params.id;
     var content = req.body.content;
@@ -153,6 +171,7 @@ app.post('/t/update/:id', function(req, res) {
     });
 });
 
+// Browser side use ajax deleter.
 app.post('/t/delete/:id', function(req, res) {
     var id = req.params.id;
     console.log('start delete' + id);

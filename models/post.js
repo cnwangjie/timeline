@@ -10,9 +10,9 @@ var PostSchema = new mongoose.Schema({
 });
 
 PostSchema.statics = {
-    list: function(start, limit, cb) {
+    list: function(user, start, limit, cb) {
         return this
-            .find()
+            .find({user: user})
             .sort({created_at: -1})
             .skip(start)
             .limit(limit)
