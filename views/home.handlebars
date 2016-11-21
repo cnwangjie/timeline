@@ -1,1 +1,7 @@
-<h1>hello world!</h1>
+<h1>hello {{login}}</h1>
+{{#each users}}
+    <div class="jumbotron">
+        <a href="/t/{{this.username}}"><h4>{{this.username}}</h4></a>
+        <h4>total posts: {{this.posts_sum}}</h4>
+    </div>
+{{/each}}

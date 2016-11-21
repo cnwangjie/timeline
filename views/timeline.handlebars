@@ -1,3 +1,4 @@
+{{#if auth}}
 <div id="writer" class="jumbotron">
     <form ic-post-to="./{{user}}/new" ic-target="#writer" ic-replace-target="true" role="form">
         <div class="form-group">
@@ -8,14 +9,23 @@
         </div>
     </form>
 </div>
+{{/if}}
 {{#each posts}}
     <div id="{{this.id}}" class="jumbotron">
         <p>{{date this.created_at}}</p><hr>
         <p>{{this.content}}</p>
+        {{#if auth}}
         <a ic-get-from="./post/{{this.id}}" ic-target="#{{this.id}}" class="btn btn-warning" role="button">Edit</a>
         <a ic-delete-from="./delete/{{this.id}}" ic-confirm="Are you sure?" ic-target="#{{this.id}}" class="btn btn-danger" role="button">Delete</a>
+        {{/if}}
     </div>
 {{/each}}
+{{#if posts}}
 <div id="loader" class="jumbotron">
     <a ic-get-from="./{{user}}?page=2" ic-target="#loader" ic-replace-target="true" class="btn btn-default btn-lg btn-block" role="button">Load More</a>
 </div>
+{{else}}
+<div class="jumbotron">
+    <h2>no more posts</h2>
+</div>
+{{/if}}
