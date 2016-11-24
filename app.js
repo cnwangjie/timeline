@@ -44,7 +44,6 @@ var hbs = exphbs.create({
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
-
 // Middleware
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser(/*credentials.cookieSecret*/));
