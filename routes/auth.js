@@ -11,7 +11,7 @@ var router = express.Router();
 // logout
 router.get('/logout', function(req, res) {
     res.clearCookie('uss');
-    res.send('<script>location.replace(document.referrer)</script>');
+    res.send('<script>location.replace("/")</script>');
 });
 
 // User login or register
@@ -35,7 +35,7 @@ router.post('/', function(req, res) {
                     if (err) {
                         console.log(err);
                     } else {
-                        var resText = '<script>alert("register success, you can re-enter your user name and password to login")</script>\
+                        var resText = '<script>alert("register success, you can re-enter your user name and password to login");location.replace("/")</script>\
                         <form class="navbar-form navbar-right" id="auther" ic-post-to="/auth" ic-target="#auther" ic-replace-target="true" class="form-inline" role="form">\
                           <div class="form-group">\
                             <label class="sr-only">Username</label>\
