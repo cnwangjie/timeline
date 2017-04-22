@@ -39,7 +39,7 @@ router.post('/', function(req, res) {
                         <form class="navbar-form navbar-right" id="auther" ic-post-to="/auth" ic-target="#auther" ic-replace-target="true" class="form-inline" role="form">\
                           <div class="form-group">\
                             <label class="sr-only">Username</label>\
-                            <input type="text" class="form-control" name="user" placeholder="Enter Username" value="' + username + '">\
+                            <input type="text" class="form-control" name="username" placeholder="Enter Username" value="' + username + '">\
                           </div>\
                           <div class="form-group">\
                             <label class="sr-only">Password</label>\
@@ -66,7 +66,7 @@ router.post('/', function(req, res) {
                     <form class="navbar-form navbar-right" id="auther" ic-post-to="/auth" ic-target="#auther" ic-replace-target="true" class="form-inline" role="form">\
                       <div class="form-group">\
                         <label class="sr-only">Username</label>\
-                        <input type="text" class="form-control" name="user" placeholder="Enter Username">\
+                        <input type="text" class="form-control" name="username" placeholder="Enter Username">\
                       </div>\
                       <div class="form-group">\
                         <label class="sr-only">Password</label>\
@@ -83,7 +83,7 @@ router.post('/', function(req, res) {
         <form class="navbar-form navbar-right" id="auther" ic-post-to="/auth" ic-target="#auther" ic-replace-target="true" class="form-inline" role="form">\
           <div class="form-group">\
             <label class="sr-only">Username</label>\
-            <input type="text" class="form-control" name="user" placeholder="Enter Username">\
+            <input type="text" class="form-control" name="username" placeholder="Enter Username">\
           </div>\
           <div class="form-group">\
             <label class="sr-only">Password</label>\
